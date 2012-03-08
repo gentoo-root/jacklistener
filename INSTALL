@@ -1,0 +1,8 @@
+To install jacklistener run:
+
+$ make
+# make install
+
+To uninstall jacklistener run:
+
+# make uninstall

@@ -1,0 +1,6 @@
+jacklistener changelog:
+
+08/03/12 - 0.1:
+		- Initial release. Jack listener daemon listens on event
+		devices of headphones and microphone jack and sends signals to
+		D-Bus when their state changes.

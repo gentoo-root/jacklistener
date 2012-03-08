@@ -1,0 +1,63 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          jacklistener
+# Required-Start:    dbus $local_fs
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Headphones jack daemon
+# Description: Provide information about headphones jack insertion on D-Bus
+### END INIT INFO
+
+set -e
+
+. /lib/lsb/init-functions
+
+PIDFILE=/var/run/jacklistenerd
+DAEMON=/usr/sbin/jacklistenerd
+
+case "$1" in
+	start)
+		log_daemon_msg "Starting jack listener daemon" "jacklistener"
+		if [ -s "$PIDFILE" ] && kill -0 `cat "$PIDFILE"` > /dev/null 2>&1; then
+			log_progress_msg "already running"
+			log_end_msg 0
+			exit 0
+		fi
+		DEVICES=
+		cd /sys/class/input
+		for evdev in event*; do
+			PHYS="`cat $evdev/device/phys`"
+			if [ "$PHYS" = ALSA ]; then
+				DEVICES="$DEVICES /dev/input/$evdev"
+			fi
+		done
+		cd "$OLDPWD"
+		start-stop-daemon --start --quiet --background --pidfile $PIDFILE --make-pidfile --exec "$DAEMON" -- $DEVICES
+		RES="$?"
+		log_end_msg "$RES"
+		if [ "$RES" -ne 0 ]; then
+			rm -f $PIDFILE
+		fi
+		;;
+	stop)
+		log_daemon_msg "Stopping jack listener daemon" "jacklistener"
+		start-stop-daemon --stop --quiet --pidfile $PIDFILE
+		log_end_msg "$?"
+		rm -f $PIDFILE
+		;;
+	reload|restart|force-reload)
+		$0 stop
+		$0 start
+		;;
+	status)
+		status_of_proc -p $PIDFILE "$DAEMON" jacklistener
+		;;
+	*)
+		echo "Usage: $N {start|stop|reload|restart|force-reload|status}" >&2
+		exit 1
+		;;
+esac
+
+exit 0
