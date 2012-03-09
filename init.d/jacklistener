@@ -39,7 +39,7 @@ case "$1" in
 		rm -f $PIDFILE
 		;;
 	reload|restart|force-reload)
-		$0 stop
+		$0 stop || :
 		$0 start
 		;;
 	status)
