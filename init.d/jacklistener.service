@@ -1,0 +1,10 @@
+[Unit]
+Description=Jack Listener Daemon
+After=sysinit.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/jacklistenerd
+
+[Install]
+WantedBy=multi-user.target

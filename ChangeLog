@@ -4,3 +4,5 @@ jacklistener changelog:
 		- Initial release. Jack listener daemon listens on event
 		devices of headphones and microphone jack and sends signals to
 		D-Bus when their state changes.
+		- Autodetection of event devices.
+		- Runscripts for SysVinit and systemd.

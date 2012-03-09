@@ -25,16 +25,7 @@ case "$1" in
 			log_end_msg 0
 			exit 0
 		fi
-		DEVICES=
-		cd /sys/class/input
-		for evdev in event*; do
-			PHYS="`cat $evdev/device/phys`"
-			if [ "$PHYS" = ALSA ]; then
-				DEVICES="$DEVICES /dev/input/$evdev"
-			fi
-		done
-		cd "$OLDPWD"
-		start-stop-daemon --start --quiet --background --pidfile $PIDFILE --make-pidfile --exec "$DAEMON" -- $DEVICES
+		start-stop-daemon --start --quiet --background --pidfile $PIDFILE --make-pidfile --exec "$DAEMON"
 		RES="$?"
 		log_end_msg "$RES"
 		if [ "$RES" -ne 0 ]; then

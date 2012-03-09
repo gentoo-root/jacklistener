@@ -10,7 +10,9 @@ Currently supported jacks are:
 
 How to use it:
 ===============
-Add script /etc/init.d/jacklistener to your default runlevel if you use SysVinit.
+If you use SysVinit, add script /etc/init.d/jacklistener to your default runlevel.
+If you use systemd, run:
+# systemctl enable jacklistener.service
 
 How to compile:
 ===============
