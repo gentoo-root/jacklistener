@@ -9,6 +9,7 @@ CC = gcc
 LD = gcc
 INSTALL = install -v
 RM = rm -f -v
+RMDIR = rmdir -v
 
 CFLAGS = -O3 -Wall -fomit-frame-pointer `pkg-config --cflags dbus-1`
 LDFLAGS =
@@ -33,9 +34,16 @@ clean:
 	$(RM) jacklistenerd *.o *.dep
 
 install:
-	$(INSTALL) jacklistenerd /usr/sbin
-	$(INSTALL) init.d/jacklistener /etc/init.d
-	$(INSTALL) org.ude.jacklistener.conf /etc/dbus-1/system.d
+	$(INSTALL) -d $(DESTDIR)/usr/lib/jacklistener $(DESTDIR)/usr/sbin
+	$(INSTALL) jacklistenerd $(DESTDIR)/usr/lib/jacklistener/
+	$(INSTALL) jacklistener-runscript $(DESTDIR)/usr/sbin/jacklistenerd
+	$(INSTALL) -d $(DESTDIR)/etc/init.d
+	[ -x /sbin/runscript ] && $(INSTALL) init.d/jacklistener-openrc $(DESTDIR)/etc/init.d || $(INSTALL) init.d/jacklistener $(DESTDIR)/etc/init.d/
+	$(INSTALL) -d $(DESTDIR)/lib/systemd/system
+	$(INSTALL) init.d/jacklistener.service $(DESTDIR)/lib/systemd/system/
+	$(INSTALL) -d $(DESTDIR)/etc/dbus-1/system.d
+	$(INSTALL) org.ude.jacklistener.conf $(DESTDIR)/etc/dbus-1/system.d/
 
 uninstall:
-	$(RM) /usr/sbin/jacklistenerd /etc/init.d/jacklistener /etc/dbus-1/system.d/org.ude.jacklistener.conf
+	$(RM) $(DESTDIR)/usr/lib/jacklistener/jacklistenerd $(DESTDIR)/usr/sbin/jacklistenerd $(DESTDIR)/etc/init.d/jacklistener $(DESTDIR)/lib/systemd/system/jacklistener.service $(DESTDIR)/etc/dbus-1/system.d/org.ude.jacklistener.conf
+	$(RMDIR) $(DESTDIR)/usr/lib/jacklistener
