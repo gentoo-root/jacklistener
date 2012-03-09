@@ -74,21 +74,45 @@ static void handle_switch(__u16 code, __s32 value)
 {
 	char *codename;
 	switch (code) {
+#ifdef SW_HEADPHONE_INSERT
 	case SW_HEADPHONE_INSERT:
 		codename = "headphone";
 		break;
+#else
+#warning You have old kernel headers. Some features will be disabled. Please upgrade to Linux-3.2 or newer.
+#endif
+
+#ifdef SW_MICROPHONE_INSERT
 	case SW_MICROPHONE_INSERT:
 		codename = "microphone";
 		break;
+#else
+#warning You have old kernel headers. Some features will be disabled. Please upgrade to Linux-3.2 or newer.
+#endif
+
+#ifdef SW_LINEOUT_INSERT
 	case SW_LINEOUT_INSERT:
 		codename = "lineout";
 		break;
+#else
+#warning You have old kernel headers. Some features will be disabled. Please upgrade to Linux-3.2 or newer.
+#endif
+
+#ifdef SW_VIDEOOUT_INSERT
 	case SW_VIDEOOUT_INSERT:
 		codename = "videoout";
 		break;
+#else
+#warning You have old kernel headers. Some features will be disabled. Please upgrade to Linux-3.2 or newer.
+#endif
+
+#ifdef SW_LINEIN_INSERT
 	case SW_LINEIN_INSERT:
 		codename = "linein";
 		break;
+#else
+#warning You have old kernel headers. Some features will be disabled. Please upgrade to Linux-3.2 or newer.
+#endif
 	default:
 		codename = "unknown";
 		break;
