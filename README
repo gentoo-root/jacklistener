@@ -26,6 +26,7 @@ $ make
 # make install
 
 If you are on Gentoo, you should use ebuild. It is located in directory 'gentoo'.
+If you are on Archlinux, you should use PKGBUILD. It is located in directory 'arch'.
 
 How to uninstall:
 ===============
