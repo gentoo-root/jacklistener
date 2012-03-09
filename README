@@ -25,9 +25,15 @@ How to compile:
 $ make
 # make install
 
+If you are on Gentoo, you should use ebuild. It is located in directory 'gentoo'.
+
 How to uninstall:
 ===============
 # make uninstall
+
+Dependencies:
+===============
+- DBus
 
 Please report bugs to: https://github.com/gentoo-root/jacklistener/issues, registration is needed.
 
