@@ -1,0 +1,26 @@
+What is it?
+===============
+Jack Listener Daemon is a daemon that monitors ALSA jacks plugging/unplugging events and sends signals with these events to D-Bus.
+
+Currently supported jacks are:
+ - Headphones
+ - Microphone
+ - Line in/out
+ - Video out
+
+How to use it:
+===============
+Add script /etc/init.d/jacklistener to your default runlevel if you use SysVinit.
+
+How to compile:
+===============
+$ make
+# make install
+
+How to uninstall:
+===============
+# make uninstall
+
+Please report bugs to: https://github.com/gentoo-root/jacklistener/issues, registration is needed.
+
+Maxim A. Mikityanskiy
