@@ -11,8 +11,14 @@ Currently supported jacks are:
 How to use it:
 ===============
 If you use SysVinit, add script /etc/init.d/jacklistener to your default runlevel.
+
 If you use systemd, run:
 # systemctl enable jacklistener.service
+
+If you use OpenRC (e.g. on Gentoo), run:
+# rc-update add jacklistener default
+
+The daemon starts after next boot, but you can start it manually.
 
 How to compile:
 ===============
