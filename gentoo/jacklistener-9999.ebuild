@@ -1,7 +1,7 @@
 # media-sound/jacklistener/jacklistener-9999.ebuild
 EAPI=3
 
-inherit git-2 systemd
+inherit git-2 systemd autotools-utils
 
 DESCRIPTION="Headphones Jack Listener Daemon"
 HOMEPAGE="https://github.com/gentoo-root/jacklistener"
@@ -15,8 +15,3 @@ IUSE=""
 RDEPEND="sys-apps/dbus
 		>=sys-kernel/linux-headers-3.2"
 DEPEND="${RDEPEND}"
-
-src_install() {
-	emake DESTDIR="${D}" install || die
-	dodoc AUTHORS NEWS README* ChangeLog
-}
