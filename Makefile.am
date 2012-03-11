@@ -15,7 +15,7 @@ endif
 
 if CONFIG_ARCH
 archrcdir = $(sysconfdir)/rc.d
-archrc_DATA = init.d/arch/jacklistener
+archrc_DATA = init.d/arch/jacklistenerd
 endif
 
 if CONFIG_SYSTEMD
@@ -31,3 +31,14 @@ lsbrc_DATA = init.d/jacklistener
 endif
 
 AM_CFLAGS = -include $(top_builddir)/config.h
+
+install-data-hook:
+if CONFIG_OPENRC
+	chmod +x $(DESTDIR)$(openrcdir)/jacklistener
+endif
+if CONFIG_ARCH
+	chmod +x $(DESTDIR)$(archrcdir)/jacklistenerd
+endif
+if CONFIG_LSB
+	chmod +x $(DESTDIR)$(lsbrcdir)/jacklistener
+endif
