@@ -21,7 +21,8 @@ endif
 if CONFIG_SYSTEMD
 systemddir = $(libdir)/systemd/system
 systemd_DATA = init.d/jacklistener.service
-sbin_DATA = init.d/jacklistener-runscript
+sbindirdir = $(sbindir)
+sbindir_DATA = init.d/jacklistener-runscript
 endif
 
 if CONFIG_LSB
