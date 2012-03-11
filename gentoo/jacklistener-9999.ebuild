@@ -17,7 +17,6 @@ RDEPEND="sys-apps/dbus
 DEPEND="${RDEPEND}"
 
 src_prepare() {
-	#autotools_run_tool libtoolize
 	eautoreconf
 }
 
@@ -25,4 +24,8 @@ src_configure() {
 	econf \
 		--enable-openrc \
 		$(use_enable systemd)
+}
+
+src_install() {
+	emake DESTDIR="${D}" install || die
 }
