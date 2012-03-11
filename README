@@ -22,11 +22,18 @@ The daemon starts after next boot, but you can start it manually.
 
 How to compile:
 ===============
+$ libtoolize
+$ aclocal -I m4
+$ autoheader
+$ automake --add-missing
+$ autoconf
+$ ./configure --prefix=/usr --sysconfdir=/etc
 $ make
 # make install
 
 If you are on Gentoo, you should use ebuild. It is located in directory 'gentoo'.
-If you are on Archlinux, you should use PKGBUILD. It is located in directory 'arch'.
+If you are on Archlinux, you should use PKGBUILD from AUR.
+If you want init script or systemd unit, add '--enable-lsb' or '--enable-systemd' to configure line.
 
 How to uninstall:
 ===============

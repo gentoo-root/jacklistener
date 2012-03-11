@@ -1,0 +1,28 @@
+#!/sbin/runscript
+
+depend() {
+	need localmount
+	after bootmisc modules isapnp coldplug hotplug
+}
+
+start() {
+	ebegin "Starting Jack Listener Daemon"
+	DEVICES=
+	cd /sys/class/input
+	for evdev in event*; do
+		PHYS="`cat "$evdev/device/phys"`"
+		if [ "$PHYS" = ALSA ]; then
+			DEVICES="$DEVICES /dev/input/$evdev"
+		fi
+	done
+	cd "$OLDPWD"
+	start-stop-daemon --start --quiet --background --pidfile /var/run/jacklistenerd.pid --make-pidfile --exec /usr/sbin/jacklistenerd -- $DEVICES
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping Jack Listener Daemon"
+	start-stop-daemon --stop --quiet --pidfile /var/run/jacklistenerd.pid
+	rm -f /var/run/jacklistenerd.pid
+	eend $?
+}
