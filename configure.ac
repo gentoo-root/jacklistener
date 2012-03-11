@@ -14,7 +14,6 @@ AC_PROG_INSTALL
 AC_HEADER_STDC()
 AC_CHECK_HEADERS([fcntl.h stdlib.h unistd.h])
 
-#XDT_CHECK_PACKAGE([DBUS], [dbus-1], [1.4])
 PKG_CHECK_MODULES(DBUS, [ dbus-1 >= 1.3.2 ])
 
 AC_ARG_ENABLE(openrc, AS_HELP_STRING([--enable-openrc], [Enable OpenRC initscript]),
