@@ -1,7 +1,7 @@
 # media-sound/jacklistener/jacklistener-9999.ebuild
 EAPI=3
 
-inherit git-2 systemd autotools-utils
+inherit autotools git-2 systemd
 
 DESCRIPTION="Headphones Jack Listener Daemon"
 HOMEPAGE="https://github.com/gentoo-root/jacklistener"
@@ -17,17 +17,12 @@ RDEPEND="sys-apps/dbus
 DEPEND="${RDEPEND}"
 
 src_prepare() {
-	autotools-utils_src_prepare
+	#autotools_run_tool libtoolize
+	eautoreconf
 }
 
 src_configure() {
-	local myeconfargs=(
-		--enable-openrc
+	econf \
+		--enable-openrc \
 		$(use_enable systemd)
-	)
-	autotools-utils_src_configure
-}
-
-src_install() {
-	autotools-utils_src_install
 }
