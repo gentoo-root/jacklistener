@@ -23,11 +23,10 @@ case "$1" in
 		done
 
 		if [ -z "$DEVICES" ]; then
-			printhl "No devices found. Your configuration is unsupported!"
-			stat_die 1
+			printhl "No devices found. Your configuration is probably unsupported!"
 		fi
 
-		[ -z "$PID" ] && $DAEMON --quiet --daemon $DEVICES &>/dev/null
+		[ -z "$PID" ] && $DAEMON -qd $DEVICES &>/dev/null
 		if [ $? = 0 ]; then
 			add_daemon $DAEMON
 			stat_done
