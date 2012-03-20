@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/input.h>
+#include <getopt.h>
 
 #include "main.h"
 #include "event.h"
@@ -29,23 +30,70 @@
 
 static fd_set evdevfds;
 
+static void usage();
 static void openfiles(int count, char *names[]);
 
 int main(int argc, char *argv[])
 {
 	if (argc <= 1) {
-		printf("Usage: %s <event device files>\n", argv[0]);
-		exit(254);
+		usage(argv[0]);
 	}
-	openfiles(argc-1, argv+1);
+
+	// Parse options
+	int is_daemon = 0;
+	const struct option options[] = {
+		{ "daemon", no_argument, &is_daemon, 1 },
+		{ NULL, 0, NULL, 0 }
+	};
+	int optparse;
+	//opterr = 0;
+	while ((optparse = getopt_long(argc, argv, "d", options, NULL)) != -1) {
+		switch (optparse) {
+		case 0:
+			break;
+		case 'd':
+			is_daemon = 1;
+			break;
+		case '?':
+		default:
+			fprintf(stderr, "Invalid options\n");
+			usage(argv[0]);
+			break;
+		}
+	}
+
+	if (optind >= argc) {
+		usage(argv[0]);
+	}
+
+	openfiles(argc-optind, argv+optind);
 	if (!mp_dbus_init()) {
 		fprintf(stderr, "Unable to initialize D-Bus\n");
 		exit(13);
 	}
+
+	if (is_daemon) {
+		switch (fork()) {
+		case -1:
+			terminate(63);
+		case 0:
+			break;
+		default:
+			fprintf(stderr, "Daemonized successfully\n");
+			exit(0);
+		}
+	}
+
 	parse_events(&evdevfds);
 	terminate(0);
 
 	return 0;
+}
+
+static void usage(char *argv0)
+{
+	fprintf(stderr, "Usage: %s [-d|--daemon] <event device files>\n", argv0);
+	exit(254);
 }
 
 static void openfiles(int count, char *names[])
