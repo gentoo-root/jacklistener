@@ -77,6 +77,13 @@ int main(int argc, char *argv[])
 		case -1:
 			terminate(63);
 		case 0:
+			close(STDIN_FILENO);
+			close(STDOUT_FILENO);
+			close(STDERR_FILENO);
+			if (chdir("/")) ;
+			if (setsid() == -1) {
+				terminate(63);
+			}
 			break;
 		default:
 			fprintf(stderr, "Daemonized successfully\n");
