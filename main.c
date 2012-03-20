@@ -30,9 +30,11 @@
 #include "dbus.h"
 
 static fd_set evdevfds;
+FILE *pidfile;
 
 static void usage();
 static void openfiles(int count, char *names[]);
+static void open_pidfile(char *path);
 
 int main(int argc, char *argv[])
 {
@@ -42,19 +44,24 @@ int main(int argc, char *argv[])
 
 	// Parse options
 	int is_daemon = 0;
+	int is_pidfile = 0;
 	const struct option options[] = {
-		{ "daemon", no_argument, &is_daemon, 1 },
+		{ "daemon", no_argument, NULL, 'd' },
+		{ "pidfile", required_argument, NULL, 'p' },
 		{ NULL, 0, NULL, 0 }
 	};
 	int optparse;
 	//opterr = 0;
-	while ((optparse = getopt_long(argc, argv, "d", options, NULL)) != -1) {
+	while ((optparse = getopt_long(argc, argv, "dp:", options, NULL)) != -1) {
 		switch (optparse) {
-		case 0:
-			break;
 		case 'd':
 			is_daemon = 1;
 			break;
+		case 'p':
+			is_pidfile = 1;
+			open_pidfile(optarg);
+			break;
+		case ':':
 		case '?':
 		default:
 			fprintf(stderr, "Invalid options\n");
@@ -85,12 +92,18 @@ int main(int argc, char *argv[])
 			if (setsid() == -1) {
 				terminate(63);
 			}
-			setuid(getpwnam("daemon")->pw_uid);
 			break;
 		default:
 			fprintf(stderr, "Daemonized successfully\n");
 			exit(0);
 		}
+	}
+
+	setuid(getpwnam("daemon")->pw_uid);
+
+	if (is_pidfile) {
+		fprintf(pidfile, "%d", getpid());
+		fclose(pidfile);
 	}
 
 	parse_events(&evdevfds);
@@ -140,4 +153,13 @@ void terminate(int exitcode)
 	}
 
 	exit(exitcode);
+}
+
+static void open_pidfile(char *path)
+{
+	if ((pidfile = fopen(path, "w")) == NULL) {
+		perror("fopen");
+		fprintf(stderr, "Cannot open pidfile \"%s\"\n", path);
+		exit(31);
+	}
 }
