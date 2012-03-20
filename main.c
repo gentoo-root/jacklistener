@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <linux/input.h>
 #include <getopt.h>
+#include <pwd.h>
 
 #include "main.h"
 #include "event.h"
@@ -84,6 +85,7 @@ int main(int argc, char *argv[])
 			if (setsid() == -1) {
 				terminate(63);
 			}
+			setuid(getpwnam("daemon")->pw_uid);
 			break;
 		default:
 			fprintf(stderr, "Daemonized successfully\n");
