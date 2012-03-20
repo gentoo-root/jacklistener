@@ -27,7 +27,7 @@ case "$1" in
 			stat_die 1
 		fi
 
-		[ -z "$PID" ] && exec $DAEMON $DEVICES &>/dev/null &
+		[ -z "$PID" ] && $DAEMON --daemon $DEVICES &>/dev/null
 		if [ $? = 0 ]; then
 			add_daemon $DAEMON
 			stat_done
