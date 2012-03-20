@@ -1,5 +1,7 @@
 #!/sbin/runscript
 
+PIDFILE=/var/run/jacklistenerd.pid
+
 depend() {
 	need localmount
 	after bootmisc modules isapnp coldplug hotplug
@@ -16,13 +18,13 @@ start() {
 		fi
 	done
 	cd "$OLDPWD"
-	start-stop-daemon --start --quiet --pidfile /var/run/jacklistenerd.pid --make-pidfile --exec /usr/sbin/jacklistenerd -- --daemon $DEVICES
+	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec /usr/sbin/jacklistenerd -- --quiet --pidfile $PIDFILE --daemon $DEVICES
 	eend $?
 }
 
 stop() {
 	ebegin "Stopping Jack Listener Daemon"
-	start-stop-daemon --stop --quiet --pidfile /var/run/jacklistenerd.pid
-	rm -f /var/run/jacklistenerd.pid
+	start-stop-daemon --stop --quiet --pidfile $PIDFILE
+	rm -f $PIDFILE
 	eend $?
 }

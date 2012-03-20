@@ -14,7 +14,7 @@ set -e
 
 . /lib/lsb/init-functions
 
-PIDFILE=/var/run/jacklistenerd
+PIDFILE=/var/run/jacklistenerd.pid
 DAEMON=/usr/sbin/jacklistenerd
 
 case "$1" in
@@ -34,7 +34,7 @@ case "$1" in
 			fi
 		done
 		cd "$OLDPWD"
-		start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --exec "$DAEMON" -- --daemon $DEVICES
+		start-stop-daemon --start --quiet --pidfile $PIDFILE --exec "$DAEMON" -- --quiet --daemon --pidfile $PIDFILE $DEVICES &> /dev/null
 		RES="$?"
 		log_end_msg "$RES"
 		if [ "$RES" -ne 0 ]; then
