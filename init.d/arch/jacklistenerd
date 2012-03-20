@@ -1,5 +1,7 @@
 #!/bin/bash
 
+NEED_ROOT=1
+
 . /etc/rc.conf
 . /etc/rc.d/functions
 
@@ -21,7 +23,8 @@ case "$1" in
 		done
 
 		if [ -z "$DEVICES" ]; then
-			stat_append "No devices found. Your configuration is probably unsupported!"
+			printhl "No devices found. Your configuration is unsupported!"
+			stat_die 1
 		fi
 
 		[ -z "$PID" ] && exec $DAEMON $DEVICES &>/dev/null &
@@ -29,8 +32,7 @@ case "$1" in
 			add_daemon $DAEMON
 			stat_done
 		else
-			stat_fail
-			exit 1
+			stat_die 2
 		fi
                 ;;
 	stop)
@@ -40,8 +42,7 @@ case "$1" in
 			rm_daemon $DAEMON
 			stat_done
 		else
-			stat_fail
-			exit 1
+			stat_die 1
 		fi
 		;;
 	restart)
