@@ -30,7 +30,8 @@
 #include "dbus.h"
 
 static fd_set evdevfds;
-FILE *pidfile;
+static FILE *pidfile;
+static int is_quiet = 0;
 
 static void usage();
 static void openfiles(int count, char *names[]);
@@ -46,14 +47,18 @@ int main(int argc, char *argv[])
 	int is_daemon = 0;
 	int is_pidfile = 0;
 	const struct option options[] = {
+		{ "quiet", no_argument, NULL, 'q' },
 		{ "daemon", no_argument, NULL, 'd' },
 		{ "pidfile", required_argument, NULL, 'p' },
 		{ NULL, 0, NULL, 0 }
 	};
 	int optparse;
 	//opterr = 0;
-	while ((optparse = getopt_long(argc, argv, "dp:", options, NULL)) != -1) {
+	while ((optparse = getopt_long(argc, argv, "qdp:", options, NULL)) != -1) {
 		switch (optparse) {
+		case 'q':
+			is_quiet = 1;
+			break;
 		case 'd':
 			is_daemon = 1;
 			break;
@@ -94,7 +99,9 @@ int main(int argc, char *argv[])
 			}
 			break;
 		default:
-			fprintf(stderr, "Daemonized successfully\n");
+			if (!is_quiet) {
+				fprintf(stderr, "Daemonized successfully\n");
+			}
 			exit(0);
 		}
 	}
@@ -114,7 +121,7 @@ int main(int argc, char *argv[])
 
 static void usage(char *argv0)
 {
-	fprintf(stderr, "Usage: %s [-d|--daemon] <event device files>\n", argv0);
+	fprintf(stderr, "Usage: %s [-q|--quiet] [-d|--daemon] [-p|--pidfile <pidfile>] <event device files>\n", argv0);
 	exit(254);
 }
 
@@ -132,10 +139,12 @@ static void openfiles(int count, char *names[])
 		char device_name[1024];
 		if ((ioctl(evdevfd, EVIOCGNAME(sizeof(device_name)), device_name)) < 0) {
 			perror("ioctl");
-			printf("Not event device: \"%s\"\n", names[i]);
+			fprintf(stderr, "Not event device: \"%s\"\n", names[i]);
 			close(evdevfd);
 		} else {
-			printf("Opened device \"%s\"\n", device_name);
+			if (!is_quiet) {
+				fprintf(stderr, "Opened device \"%s\"\n", device_name);
+			}
 			FD_SET(evdevfd, &evdevfds);
 		}
 	}
