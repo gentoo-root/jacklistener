@@ -34,7 +34,7 @@ case "$1" in
 			fi
 		done
 		cd "$OLDPWD"
-		start-stop-daemon --start --quiet --background --pidfile $PIDFILE --make-pidfile --exec "$DAEMON" -- $DEVICES
+		start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --exec "$DAEMON" -- --daemon $DEVICES
 		RES="$?"
 		log_end_msg "$RES"
 		if [ "$RES" -ne 0 ]; then
