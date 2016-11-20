@@ -4,7 +4,7 @@ After=sysinit.target
 
 [Service]
 Type=simple
-ExecStart=/usr/sbin/jacklistenerd-runscript
+ExecStart=/usr/sbin/jacklistener-runscript
 
 [Install]
 WantedBy=multi-user.target

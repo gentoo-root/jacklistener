@@ -7,4 +7,4 @@ for evdev in event*; do
 		DEVICES="$DEVICES /dev/input/$evdev"
 	fi
 done
-exec /usr/lib/jacklistener/jacklistenerd $DEVICES
+exec /usr/sbin/jacklistenerd $DEVICES

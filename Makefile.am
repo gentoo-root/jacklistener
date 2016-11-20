@@ -42,3 +42,6 @@ endif
 if CONFIG_LSB
 	chmod +x $(DESTDIR)$(lsbrcdir)/jacklistener
 endif
+if CONFIG_SYSTEMD
+	chmod +x $(DESTDIR)$(sbindir)/jacklistener-runscript
+endif
