@@ -50,7 +50,7 @@ int mp_dbus_init()
 	}
 	if (res != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 		fprintf(stderr, "DBus: name request failed\n");
-		dbus_connection_close(connection);
+		dbus_connection_unref(connection);
 		dbus_error_free(&error);
 		return 0;
 	}
@@ -60,7 +60,7 @@ int mp_dbus_init()
 
 void mp_dbus_fini()
 {
-	dbus_connection_close(connection);
+	dbus_connection_unref(connection);
 }
 
 int mp_dbus_send_signal(const char *path, const char *interface, const char *name, const char *str, int state)

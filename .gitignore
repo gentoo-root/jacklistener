@@ -13,3 +13,6 @@ jacklistenerd
 libtool
 m4/*
 stamp-h1
+/init.d/jacklistener-runscript
+/init.d/jacklistener.service
+/init.d/openrc/jacklistener

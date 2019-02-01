@@ -15,7 +15,7 @@ set -e
 . /lib/lsb/init-functions
 
 PIDFILE=/var/run/jacklistenerd.pid
-DAEMON=/usr/sbin/jacklistenerd
+DAEMON="@sbindir@/jacklistener-runscript"
 
 case "$1" in
 	start)
@@ -25,16 +25,7 @@ case "$1" in
 			log_end_msg 0
 			exit 0
 		fi
-		DEVICES=
-		cd /sys/class/input
-		for evdev in event*; do
-			PHYS="`cat "$evdev/device/phys"`"
-			if [ "$PHYS" = ALSA ]; then
-				DEVICES="$DEVICES /dev/input/$evdev"
-			fi
-		done
-		cd "$OLDPWD"
-		start-stop-daemon --start --quiet --pidfile $PIDFILE --exec "$DAEMON" -- --quiet --daemon --pidfile $PIDFILE $DEVICES &> /dev/null
+		start-stop-daemon --start --quiet --pidfile $PIDFILE --exec "$DAEMON" -- --quiet --daemon --pidfile $PIDFILE &> /dev/null
 		RES="$?"
 		log_end_msg "$RES"
 		if [ "$RES" -ne 0 ]; then

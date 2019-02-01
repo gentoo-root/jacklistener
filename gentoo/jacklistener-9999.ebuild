@@ -10,11 +10,12 @@ EGIT_REPO_URI="git://github.com/gentoo-root/jacklistener.git"
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="systemd"
+IUSE="systemd udev"
 
 RDEPEND="sys-apps/dbus
 		>=sys-kernel/linux-headers-3.2"
-DEPEND="${RDEPEND}"
+DEPEND="${RDEPEND}
+		dev-libs/uthash"
 
 src_prepare() {
 	eautoreconf
@@ -23,7 +24,8 @@ src_prepare() {
 src_configure() {
 	econf \
 		--enable-openrc \
-		$(use_enable systemd)
+		$(use_enable systemd) \
+		$(use_enable udev)
 }
 
 src_install() {

@@ -5,27 +5,13 @@ NEED_ROOT=1
 . /etc/rc.conf
 . /etc/rc.d/functions
 
-DAEMON=jacklistenerd
+DAEMON=jacklistener-runscript
 
 PID=$(get_pid $DAEMON)
 
 case "$1" in
 	start)
 		stat_busy "Starting $DAEMON"
-
-                DEVICES=
-                cd /sys/class/input
-                for evdev in event*; do
-                        PHYS="`cat "$evdev/device/phys"`"
-                        if [ "$PHYS" = ALSA ]; then
-                                DEVICES="$DEVICES /dev/input/$evdev"
-                        fi
-		done
-
-		if [ -z "$DEVICES" ]; then
-			printhl "No devices found. Your configuration is probably unsupported!"
-		fi
-
 		[ -z "$PID" ] && $DAEMON -qd $DEVICES &>/dev/null
 		if [ $? = 0 ]; then
 			add_daemon $DAEMON
@@ -33,7 +19,7 @@ case "$1" in
 		else
 			stat_die 2
 		fi
-                ;;
+		;;
 	stop)
 		stat_busy "Stopping $DAEMON"
 		[ -n "$PID" ] && kill $PID &>/dev/null
@@ -50,5 +36,5 @@ case "$1" in
 		$0 start
 		;;
 	*)
-                echo "usage: $0 {start|stop|restart}"
+		echo "usage: $0 {start|stop|restart}"
 esac

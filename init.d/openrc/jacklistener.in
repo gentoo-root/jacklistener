@@ -1,6 +1,7 @@
 #!/sbin/runscript
 
 PIDFILE=/var/run/jacklistenerd.pid
+DAEMON="@sbindir/jacklistener-runscript"
 
 depend() {
 	need localmount
@@ -9,16 +10,7 @@ depend() {
 
 start() {
 	ebegin "Starting Jack Listener Daemon"
-	DEVICES=
-	cd /sys/class/input
-	for evdev in event*; do
-		PHYS="`cat "$evdev/device/phys"`"
-		if [ "$PHYS" = ALSA ]; then
-			DEVICES="$DEVICES /dev/input/$evdev"
-		fi
-	done
-	cd "$OLDPWD"
-	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec /usr/sbin/jacklistenerd -- --quiet --pidfile $PIDFILE --daemon $DEVICES
+	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec "$DAEMON" -- --quiet --pidfile $PIDFILE --daemon
 	eend $?
 }
 

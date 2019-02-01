@@ -19,48 +19,30 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <linux/input.h>
 
 #include "main.h"
 #include "dbus.h"
 
-static void handle_event(int evdevfd);
 static void handle_switch(__u16 code, __s32 value);
 
-void parse_events(const fd_set *evdevfds)
-{
-	for (;;) {
-		fd_set activefds = *evdevfds;
-		if (select(FD_SETSIZE, &activefds, NULL, NULL, NULL) < 0) {
-			perror("select");
-			terminate(3);
-		}
-
-		int i;
-		for (i=0; i<FD_SETSIZE; i++) {
-			if (FD_ISSET(i, &activefds)) {
-				handle_event(i);
-			}
-		}
-	}
-}
-
-static void handle_event(int evdevfd)
+bool handle_device_event(int evdevfd)
 {
 	struct input_event event;
 	int rbytes = read(evdevfd, &event, sizeof(event));
 
 	if (rbytes == -1) {
 		perror("read");
-		terminate(4);
+		return false;
 	} else
 	if (rbytes == 0) {
 		printf("EOF\n");
-		terminate(4);
+		return false;
 	} else
 	if (rbytes != sizeof(event)) {
 		printf("Invalid input\n");
-		terminate(4);
+		return false;
 	}
 
 	switch (event.type) {
@@ -68,6 +50,8 @@ static void handle_event(int evdevfd)
 		handle_switch(event.code, event.value);
 		break;
 	}
+
+	return true;
 }
 
 static void handle_switch(__u16 code, __s32 value)
