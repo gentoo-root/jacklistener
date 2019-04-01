@@ -1,0 +1,19 @@
+#!/bin/sh
+
+DAEMON="@sbindir@/jacklistenerd"
+DEVICES=
+if "$DAEMON" --has-udev; then
+	DEVICES='--udev'
+else
+	cd /sys/class/input
+	for evdev in event*; do
+		PHYS="`cat "$evdev/device/phys"`"
+		if [ "$PHYS" = ALSA ]; then
+			DEVICES="$DEVICES /dev/input/$evdev"
+		fi
+	done
+	if [ -z "$DEVICES" ]; then
+		echo "No devices found. Your configuration is probably unsupported" >&2
+	fi
+fi
+exec "$DAEMON" "$@" $DEVICES

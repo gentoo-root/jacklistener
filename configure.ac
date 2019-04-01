@@ -16,6 +16,7 @@ AC_HEADER_STDC()
 AC_CHECK_HEADERS([fcntl.h stdlib.h unistd.h])
 
 PKG_CHECK_MODULES(DBUS, [ dbus-1 >= 1.3.2 ])
+AC_CHECK_HEADERS([uthash.h])
 
 AC_ARG_ENABLE(openrc, AS_HELP_STRING([--enable-openrc], [Enable OpenRC initscript]),
 [case "${enableval}" in
@@ -48,6 +49,20 @@ AC_ARG_ENABLE(lsb, AS_HELP_STRING([--enable-lsb], [Enable LSB initscript]),
 	*) AC_MSG_ERROR(bad value ${enableval} for --enable-lsb) ;;
 esac], [lsb=no])
 AM_CONDITIONAL(CONFIG_LSB, test "$lsb" = yes)
+
+AC_ARG_ENABLE(udev, AS_HELP_STRING([--enable-udev], [Enable udev support for searching devices in runtime]),
+[case "${enableval}" in
+	yes) udev=yes;;
+	no) udev=no;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-udev) ;;
+esac], [udev=no])
+AM_CONDITIONAL(CONFIG_UDEV, test "$udev" = yes)
+
+AM_COND_IF([CONFIG_UDEV],
+	[PKG_CHECK_MODULES(UDEV, [ libudev ])])
+
+
+AC_SUBST(sbindir)
 
 test "$lsb" = yes && test "$openrc" = yes && AC_MSG_ERROR(incompatible options. Choose one of --enable-openrc and --enable-lsb)
 

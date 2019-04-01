@@ -18,4 +18,14 @@
 
 #pragma once
 
+extern fd_set evdevfds;
+extern struct hash_element *fdhash;
+
+extern int is_quiet;
+
+#ifdef ENABLE_UDEV
+extern struct udev *udev;
+extern struct udev_monitor *mon;
+#endif
+
 void terminate(int exitcode);

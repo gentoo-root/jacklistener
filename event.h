@@ -18,4 +18,6 @@
 
 #pragma once
 
-void parse_events(const fd_set *evdevfds);
+#include <stdbool.h>
+
+bool handle_device_event(int evdevfd);
