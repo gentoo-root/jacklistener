@@ -203,6 +203,8 @@ static void parse_events(void)
 #endif
 	while (1) {
 		fd_set activefds = evdevfds;
+		struct hash_element *elem, *tmp;
+
 #ifdef ENABLE_UDEV
 		if (is_udev) {
 			FD_SET(mon_fd, &activefds);
@@ -212,7 +214,7 @@ static void parse_events(void)
 			fprintf(stderr, "Error when polling events in select(): %s\n", strerror(errno));
 			terminate(3);
 		}
-		for (struct hash_element *elem = fdhash; elem != NULL; elem = elem->hh.next) {
+		HASH_ITER(hh, fdhash, elem, tmp) {
 			if (FD_ISSET(elem->fd, &activefds)) {
 				if (!handle_device_event(elem->fd)) {
 					unlisten_device_by_hash_element(elem);
