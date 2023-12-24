@@ -70,8 +70,6 @@ static void listen_device_if_not_present(const char *devnode)
 	FD_SET(elem->fd, &evdevfds);
 }
 
-#ifdef ENABLE_UDEV
-
 void unlisten_device_by_hash_element(struct hash_element *elem)
 {
 	close(elem->fd);
@@ -79,6 +77,8 @@ void unlisten_device_by_hash_element(struct hash_element *elem)
 	HASH_DEL(fdhash, elem);
 	hash_element_free(elem);
 }
+
+#ifdef ENABLE_UDEV
 
 static void unlisten_device_by_devnode(const char *devnode)
 {
